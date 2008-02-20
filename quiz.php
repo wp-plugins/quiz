@@ -15,8 +15,8 @@ Author URI: http://andyskelton.com/
 define('QUIZ_TEMPLATE_TAG', false);
 
 /*     If filled, all posts lacking the shortcode [quiz Question? Answer] will use these.     */
-define('QUIZ_DEFAULT_QUESTION', 'What is my first name?');
-define('QUIZ_DEFAULT_ANSWER', 'Andy');
+define('QUIZ_DEFAULT_QUESTION', '');
+define('QUIZ_DEFAULT_ANSWER', '');
 
 /*     This works nicely for the default theme. You may have to edit it for your theme.     */
 define('QUIZ_FORM', '
@@ -45,10 +45,16 @@ define('QUIZ_COMPARE', 'strtolower, trim');
 /*     STOP EDITING HERE     */
 
 
-/* Implementation notes
+/*     DEVELOPER INFO
+
+Implementation notes
 	* 1.0 is spaghetti code!
 	* Shortcodes are removed from post_content and saved into postmeta so that disabling the plugin won't cause all the answers to appear on the blog.
 	* Editors that do not use the standard API will not work properly with this because we need certain filters to be used.
+
+TODO:
+	* Clean up code
+	* Move config out of constants and into an admin screen
 */
 
 
