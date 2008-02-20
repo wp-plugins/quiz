@@ -190,10 +190,11 @@ function quiz_strip($id, $post) {
 
 	$content = quiz_filter($post->post_content, $id);
 
+	delete_post_meta($id, 'quiz');
+
 	if ( $content != $post->post_content ) {
 		$post->post_content = $content;
 		wp_update_post($post);
-		delete_post_meta($id, 'quiz');
 		add_post_meta($id, 'quiz', $quiz[$id], true);
 	}
 }
