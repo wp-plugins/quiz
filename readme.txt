@@ -1,4 +1,4 @@
-=== Batcache ===
+=== Quiz ===
 Contributors: andy, strider72
 Tags: comment, spam, discussion
 Tested up to: 2.5.1
