@@ -1,6 +1,6 @@
 == Version History ==
 
-1.1.1
+1.1.1 by SR 2008-11-28
 	* BUGFIX -- was blocking pingbacks and trackbacks
 	* Plugin no longer loads comment process hooks if we're in the Admin section.  Was causing problems with WP 2.7 inline replies
 	* Updated Admin screen button CSS
