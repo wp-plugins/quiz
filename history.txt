@@ -1,0 +1,41 @@
+== Version History ==
+
+1.1.1
+	* BUGFIX -- was blocking pingbacks and trackbacks
+	* Plugin no longer loads comment process hooks if we're in the Admin section.  Was causing problems with WP 2.7 inline replies
+	* Updated Admin screen button CSS
+	* Changed the default question -- some spambots can do math
+
+1.1.1 beta 1 by SR 2008-08-25
+	* BUGFIX -- rejected all comments if set to "noquiz"  (No place to answer the question, but the (non)answer was tested anyway!)
+	* BUGFIX -- if "noquiz" was entered as Answer on edit screen, it didn't save.  Now works for both Question and Answer
+
+1.1 by SR 2008-08-12
+	* Allows for multiple possible answers (separate with commas)
+	* Nonces on meta box
+	* Fix for change to output of get_plugin_data() in WP 2.7  (grrrr...)
+
+1.1 beta 6 by SR
+	* Improved set_defaults -- now unset and merge, tracks version
+	* Improved get_plugin_data -- more efficient
+	* Uses constructor instead of init()
+
+1.1 beta 5 by SR
+	* Settings Screen in Admin -- no more editing files
+	* "Comment Quiz" meta box in Post/Page edit screen -- no more shortcodes.
+		o Data stored same as before, so preexisting quizzes still work	 
+	* No more [short tag] system functions.  Requires WP 2.5+ for the meta boxes.
+	* Added wp_kses cleanup to quiz questions
+	* Added strip_tags to default Cleanup functions
+	* Legacy the_quiz() support (deprecated)
+	* Users can add quiz to their themes with do_action('show_comment_quiz') & don't have to mess with function_exists()
+	* Direct Settings link from Plugins page
+	* Automatically figures out if form was manually inserted in theme
+		o If auto-inserted, tries to reposition form via JavaScript
+	* If quiz form lacks %question% placeholder, uses default form.
+	* Moved functions into a class for code reusability and avoiding function name conflicts
+
+1.0 by AS:
+	* 1.0 is spaghetti code!
+	* Shortcodes are removed from post_content and saved into postmeta so that disabling the plugin won't cause all the answers to appear on the blog.
+	* Editors that do not use the standard API will not work properly with this because we need certain filters to be used.
