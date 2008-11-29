@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/quiz/
 Version: 1.1.1
 Date: 2008-11-28
 Description: Commenters must answer the question correctly. You provide the question for each post or page.
-Author: <a href="http://andyskelton.com/">Andy Skelton</a> and <a href="http://striderweb.com/">Stephen Rider</a>
+Author: <a href="http://andyskelton.com/">Andy Skelton</a> and <a href="http://striderweb.com/nerdaphernalia/features/wp-comment-quiz/">Stephen Rider</a>
 */
 
 // To manually place the quiz form in your comments form, use do_action('show_comment_quiz')
