@@ -9,7 +9,9 @@ Reduces spam and troll comments by requiring commenters to answer a question.
 
 == Description ==
 
-Authors can write a new Quiz question and answer for each post, fall back on a default question, or have no question at all. Commenters must correctly answer the question before their comment is submitted.
+This plugin adds a question/answer to your comment form.  Commenters must answer the question correctly before their comment will be accepted.  This cuts down on spambots, and can also be helpful with troll-control.
+
+Authors can write a new Quiz question and answer for each post, fall back on a default question, or have no question at all.
 
 Answers are checked by a caseless comparison. So spelling must be correct but uppercase letters do not matter. Short answers of one or two words are best and punctuation should be avoided.
 
@@ -23,7 +25,7 @@ Either "6" or "six" or "half dozen" will be accepted as correct.
 
 == Installation ==
 
-Upload 'quiz.php' to the '/wp-content/plugins/' directory and activate it in Admin.  If upgrading from 1.0, be sure to deactivate/upgrade/reactivate, or defaults won't be set.
+Upload the 'quiz' folder to the '/wp-content/plugins/' directory and activate it in Admin.  If upgrading from 1.0, be sure to deactivate/upgrade/reactivate, or defaults won't be set.
 
 == Instructions ==
 
@@ -32,5 +34,7 @@ When you write a post, enter the question and answer in the "Comment Quiz" meta 
 To manually place the quiz form within you comments section, edit the comments.php file and insert the following:  do_action('comment_quiz')
 
 There is a Settings screen if you want to customize things, including setting the default question or customizing the way the quiz displays on the page.
+
+Tips on how to improve questions can be found at http://striderweb.com/nerdaphernalia/features/wp-comment-quiz/
 
 (Please Note: the old "quicktag" method no longer works.  If you want to use that method, you should download version 1.0.  In 1.1 and above you enter the question in the meta box.)
