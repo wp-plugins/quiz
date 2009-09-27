@@ -9,9 +9,9 @@ Reduces spam and troll comments by requiring commenters to answer a question.
 
 == Description ==
 
-This plugin adds a question/answer to your comment form.  Commenters must answer the question correctly before their comment will be accepted.  This cuts down on spambots, and can also be helpful with troll-control.
+Commenters must answer a question correctly before their comment will be accepted.  This cuts down on spambots, and can also be helpful with troll-control.
 
-Authors can write a new Quiz question and answer for each post, fall back on a default question, or have no question at all.
+This plugin adds a question/answer to your comment form.   Authors can write a new Quiz question and answer for each post, fall back on a default question, or have no question at all.
 
 Answers are checked by a caseless comparison. So spelling must be correct but uppercase letters do not matter. Short answers of one or two words are best and punctuation should be avoided.
 
