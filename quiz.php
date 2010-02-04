@@ -21,7 +21,7 @@ class commentquiz {
 	var $option_name = 'plugin_commentquiz_settings';
 
 	function commentquiz() {
-		load_plugin_textdomain( 'commentquiz', PLUGINDIR . '/' . dirname( plugin_basename( __FILE__ ) ) );
+		load_plugin_textdomain( 'commentquiz', 'wp-content/plugins/' . basename( ( dirname( __FILE__ ) ) ) . '/lang', basename( ( dirname( __FILE__ ) ) ) . '/lang' );
 		$options = get_option( $this->option_name );
 
 		if ( !isset( $options['last_opts_ver'] ) || $options['last_opts_ver'] != $this->option_version )
