@@ -2,41 +2,38 @@
 /*
 Plugin Name: Quiz
 Plugin URI: http://wordpress.org/extend/plugins/quiz/
-Version: 1.1.1
-Date: 2008-11-28
-Description: Commenters must answer the question correctly. You provide the question for each post or page.
-Author: <a href="http://andyskelton.com/">Andy Skelton</a> and <a href="http://striderweb.com/nerdaphernalia/features/wp-comment-quiz/">Stephen Rider</a>
+Version: 1.2
+Date: 2010-02-03
+Description: Commenters must answer the question correctly. You provide the question for each post or page, unless you have post publishing capabilities.
+Author: <a href="http://andyskelton.com/">Andy Skelton</a>, <a href="http://striderweb.com/">Stephen Rider</a> and <a href="http://coveredwebservices.com/">Mark Jaquith</a>
 */
 
 // To manually place the quiz form in your comments form, use do_action('show_comment_quiz')
 
 /*
-	TODO: user option: skip if admin/ page author/ registered user
 	TODO: "Wrong answer" page -- Show comment content and caution to copy content before going back
 	TODO: Improve auto-placement JavaScript OR make user-changeable
 */
 
 class commentquiz {
 
-	var $option_version = '1.1';
+	var $option_version = '1.2';
 	var $option_name = 'plugin_commentquiz_settings';
 
 	function commentquiz() {
 		load_plugin_textdomain( 'commentquiz', PLUGINDIR . '/' . dirname( plugin_basename( __FILE__ ) ) );
-		
-		if( ! $options = get_option( $this->option_name ) )
-			$this->set_defaults();
+		$options = get_option( $this->option_name );
 
+		if ( !isset( $options['last_opts_ver'] ) || $options['last_opts_ver'] != $this->option_version )
+			$this->set_defaults();
 		if( ! is_admin() ) {
-			// This is so end users can use do_action('show_comment_quiz') in themes 
+			// This is so end users can use do_action('show_comment_quiz') in themes
 			add_action( 'show_comment_quiz', array( &$this, 'the_quiz' ) );
 			// ...otherwise will add form automatically
 			add_action( 'comment_form', array( &$this, 'the_quiz' ) );
 
 			add_filter( 'preprocess_comment', array( &$this, 'process' ), 1 );
 		}
-
-
 		add_action( 'admin_menu', array( &$this, 'add_settings_page' ) );
 		add_action( 'admin_menu', array( &$this, 'call_meta_box' ) );
 		add_action( 'save_post', array( &$this, 'save_meta_box' ) );
@@ -54,7 +51,7 @@ class commentquiz {
 		if ( ( isset( $quiz['q'] ) && 'noquiz' == $quiz['q'] ) || ( isset( $quiz['a'] ) && 'noquiz' == $quiz['a'] ) ) {
 			return false;
 		}
-		if(	empty( $quiz ) || empty( $quiz['q'] ) || ( $quiz['a'] ) ) {
+		if(	empty( $quiz ) || empty( $quiz['q'] ) || empty( $quiz['a'] ) ) {
 			if( $blankdefault ) {
 				$quiz['q'] = '';
 				$quiz['a'] = '';
@@ -63,9 +60,6 @@ class commentquiz {
 				$quiz['q'] = $options['def_q'];
 				$quiz['a'] = $options['def_a'];
 			}
-		}
-		foreach($quiz as $key=>$value) {
-			$quiz[$key] = stripslashes( $value );
 		}
 
 		return $quiz;
@@ -84,17 +78,13 @@ class commentquiz {
 			'q' => array(
 				'cite' => array ()),
 			'strike' => array(),
-			'sub' => array(), 'sup' => array(), 
+			'sub' => array(), 'sup' => array(),
 			'u' => array()
 		);
-		foreach( $quiz as $key => $value ) {
-			$quiz[$key] = addslashes(
-					wp_kses( stripslashes( $value ), $allowedtags )
-					);
-		}
+		foreach( $quiz as $key => $value )
+			$quiz[$key] = wp_kses( $value, $allowedtags );
 
-		delete_post_meta($post_id, 'quiz');
-		add_post_meta($post_id, 'quiz', $quiz, true);
+		update_post_meta( $post_id, 'quiz', $quiz );
 	}
 
 	function get_quiz_form( $html = false, $validate = true ) {
@@ -104,13 +94,13 @@ class commentquiz {
 </p>
 ';
 		$options = get_option( $this->option_name );
-		if( ! $options || 
+		if( ! $options ||
 			empty( $options['quiz_form'] ) ||
 		 	( $validate && ! strpos( $options['quiz_form'], '%question%' ) )
 		) {
 			$quiz_form = $def_quiz_form;
 		} else {
-			$quiz_form = stripslashes( $options['quiz_form'] );
+			$quiz_form = $options['quiz_form'];
 		}
 
 		if( $html ) {
@@ -146,12 +136,9 @@ class commentquiz {
 		return $output;
 	}
 
-// abstracting l18n functions so I don't have to pass domain each time
-	function p__( $text ) {
-		return __( $text, 'commentquiz' );
-	}
-	function p_e( $text ) {
-		_e( $text, 'commentquiz' );
+	function upgrade_slashing_12( $curr_options ) {
+		update_option( $this->option_name, stripslashes_deep( (array) $curr_options ) );
+		return get_option( $this->option_name );
 	}
 
 	function set_defaults( $mode = 'merge' ) {
@@ -163,10 +150,10 @@ class commentquiz {
 
 		$defaults = array(
 			'last_opts_ver' => $this->option_version,
-			'def_q' => addslashes( $this->p__('Which is warmer, ice or steam?') ), 
-			'def_a' => addslashes( $this->p__('steam') ), 
-			'compare_funcs' => addslashes( 'strip_tags, strtolower, trim' ), 
-			'quiz_form' => addslashes( $this->get_quiz_form() ) 
+			'def_q' => __( 'Which is warmer, ice or steam?', 'commentquiz' ),
+			'def_a' => __( 'steam', 'commentquiz' ),
+			'compare_funcs' => 'strip_tags, strtolower, trim',
+			'quiz_form' => $this->get_quiz_form()
 		);
 
 		if ( 'reset' == $mode ) {
@@ -174,6 +161,12 @@ class commentquiz {
 			add_option( $this->option_name, $defaults );
 		} else if ( $curr_options = get_option( $this->option_name ) ) {
 		// Merge existing prefs with new or missing defaults
+
+		// Version-specific upgrades
+			if ( !isset( $curr_options['last_opts_ver'] ) || version_compare( $curr_options['last_opts_ver'], '1.2', '<' ) )
+				$curr_options = $this->upgrade_slashing_12( $curr_options ); // Upgrade to remove slashes
+
+		// Merge
 			$curr_options = array_merge( $defaults, $curr_options );
 			$curr_options['last_opts_ver'] = $this->option_version; // always update
 			update_option( $this->option_name, $curr_options );
@@ -182,8 +175,6 @@ class commentquiz {
 		}
 		return true;
 	}
-
-
 // ****************************
 //    Comment Form Functions
 // ****************************
@@ -225,14 +216,15 @@ class commentquiz {
 
 	function process( $commentdata ) {
 		extract( $commentdata );
-		if( $comment_type != 'pingback' && 
+		if( !current_user_can( 'publish_posts' ) &&
+			$comment_type != 'pingback' &&
 			$comment_type != 'trackback' )
 			{
 			$quiz = $this->get_quiz( $comment_post_ID );
 
 			if ( $quiz ) {
 				if ( empty( $_POST['quiz'] ) )
-					wp_die( $this->p__( 'You must answer the question to post a comment. Please <a href="javascript:window.history.back()">go back</a> and try again.' ) );
+					wp_die( __( 'You must answer the question to post a comment. Please <a href="javascript:window.history.back()">go back</a> and try again.', 'commentquiz' ) );
 
 				$answer = $quiz['a'];
 				$answer = array_map( 'trim', explode( ',', $answer ) );
@@ -242,7 +234,7 @@ class commentquiz {
 					if ( $this->compare( $a, $response ) )
 						return $commentdata;
 				}
-				wp_die( $this->p__( 'You answered the question incorrectly.  Please <a href="javascript:window.history.back()">go back</a> and try again.' ) );
+				wp_die( __( 'You answered the question incorrectly.  Please <a href="javascript:window.history.back()">go back</a> and try again.', 'commentquiz' ) );
 			}
 		}
 		return $commentdata;
@@ -276,14 +268,6 @@ class commentquiz {
 		if( function_exists( 'add_meta_box' ) ) {
 			add_meta_box( 'edit_comment_quiz', 'Comment Quiz', array( &$this, 'meta_box' ), 'post', 'normal' );
 			add_meta_box( 'edit_comment_quiz', 'Comment Quiz', array( &$this, 'meta_box' ), 'page', 'normal' );
-/*
-// Not unless we want to keep supporting two completely different code sets....
-		} else { // use [quiz q? a]
-			add_filter( 'the_content', array(&$this, 'filter'), 3 );
-			add_filter( 'the_content', array(&$this, 'reconstitute'), 2);
-			add_action('wp_insert_post', array(&$this, 'strip'), 10, 2);
-			add_filter( 'edit_post_content', array(&$this, 'reconstitute'), 10, 2);
-*/
 		}
 	}
 
@@ -291,16 +275,16 @@ class commentquiz {
 		global $post_ID;
 		$quiz = $this->get_quiz( $post_ID, true );
 		if( $quiz ) {
-			$q = htmlspecialchars( $quiz['q'] );
+			$q = esc_attr( $quiz['q'] );
 		} else {
-			$q = 'noquiz';			
+			$q = 'noquiz';
 		}
-		$a = htmlspecialchars( $quiz['a'] );
+		$a = esc_attr( $quiz['a'] );
 		$nonce = wp_create_nonce( plugin_basename( __FILE__ ) );
-		$howto1 = $this->p__( 'Enter "noquiz" if you don\'t want a question for this post, or leave it blank to use the default question.' );
-		$howto2 = $this->p__( 'You may enter multiple correct answers, separated by commas; e.g. <code>color, colour</code>' );
-		$qlabel = $this->p__( 'Question' );
-		$alabel = $this->p__( 'Answer' );
+		$howto1 = __( 'Enter "noquiz" if you don\'t want a question for this post, or leave it blank to use the default question.', 'commentquiz' );
+		$howto2 = __( 'You may enter multiple correct answers, separated by commas; e.g. <code>color, colour</code>', 'commentquiz' );
+		$qlabel = __( 'Question', 'commentquiz' );
+		$alabel = __( 'Answer', 'commentquiz' );
 		echo <<< BOX
 		<input type="hidden" name="comment_quiz_metabox" id="comment_quiz_metabox" value="$nonce" />
 		<p><input type="text" name="quizQuestion" id="quizQuestion" size="25" value="$q" tabindex="3" /><label for="quizQuestion"> $qlabel</label><br />
@@ -320,20 +304,25 @@ BOX;
 			return $post_id;
 		}
 
-		$new_quiz = array( 'q'=>$_POST['quizQuestion'], 'a'=>$_POST['quizAnswer'] );
+		$new_quiz = array( 'q'=>stripslashes($_POST['quizQuestion']), 'a'=>stripslashes($_POST['quizAnswer']) );
 		$this->set_quiz( $post_id, $new_quiz );
 
-		return $new_quiz;
+		return $post_id;
 	}
 
 // *****************************
 //    Settings Page Functions
 // *****************************
 
+	function options_url() {
+		return admin_url( 'options-general.php?page=quiz' );
+	}
+
 	function add_settings_page() {
 		if( current_user_can('manage_options') ) {
-			$page = add_options_page( $this->p__( 'Comment Quiz' ), $this->p__( 'Quiz' ), 'manage_options', 'quiz', array( &$this, 'settings_page' ) );
+			$page = add_options_page( __( 'Comment Quiz', 'commentquiz' ), __( 'Quiz', 'commentquiz' ), 'manage_options', 'quiz', array( &$this, 'settings_page' ) );
 			add_filter( 'plugin_action_links', array( &$this, 'filter_plugin_actions' ), 10, 2 );
+			add_action( 'load-' . $page, array( &$this, 'save_options' ) );
 			return $page;
 		}
 		return false;
@@ -352,7 +341,7 @@ BOX;
 		if( ! $this_plugin ) $this_plugin = plugin_basename( __FILE__ );
 
 		if( $file == $this_plugin ){
-			$settings_link = '<a href="options-general.php?page=quiz">' . __( 'Settings' ) . '</a>';
+			$settings_link = '<a href="' . $this->options_url() . '">' . __( 'Settings' ) . '</a>';
 			array_unshift( $links, $settings_link );
 		}
 		return $links;
@@ -367,7 +356,7 @@ BOX;
 
 	function checktext( $options, $optname, $optdefault = '' ) {
 		// for text boxes and textareas
-		return $options[$optname] ? htmlspecialchars( stripslashes( $options[$optname] ) ) : htmlspecialchars( $optdefault );
+		return esc_attr( ( $options[$optname] ) ? $options[$optname] : $optdefault );
 	}
 
 	function checkcombo( $options, $optname, $thisopt, $is_default = false ) {
@@ -376,23 +365,28 @@ BOX;
 			( $is_default && ! $options[$optname] ) || $options[$optname] == $thisopt ) ? ' selected="selected"' : '';
 	}
 
+// Saving the options
+	function save_options() {
+		if ( isset( $_POST['save_settings'] ) ) {
+			check_admin_referer( 'commentquiz-update-options' );
+			update_option( $this->option_name, stripslashes_deep( $_POST['commentquiz_options'] ) );
+			wp_redirect( add_query_arg( 'updated', 1 ) );
+			exit();
+		}
+	}
+
 // finally, the Settings Page itself
 	function settings_page() {
 		add_action( 'in_admin_footer', array( &$this, 'admin_footer' ), 9 );
-		
-		if ( isset( $_POST['save_settings'] ) ) {
-			check_admin_referer( 'commentquiz-update-options' );
-			update_option( $this->option_name, $_POST['commentquiz_options'] );
-			echo '<div id="message" class="updated fade"><p><strong>' . __( 'Settings saved.' ) . '</strong></p></div>';
-		} 
 
 		// get options for use in formsetting functions
 		$opts = get_option( $this->option_name );
 
 	?>
 <div class="wrap">
-	<h2><?php $this->p_e( 'Comment Quiz' ); ?></h2>
-	<form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
+	<?php screen_icon(); ?>
+	<h2><?php _e( 'Comment Quiz', 'commentquiz' ); ?></h2>
+	<form method="post" action="<?php echo $this->options_url(); ?>">
 		<?php
 		if ( function_exists( 'wp_nonce_field' ) )
 			wp_nonce_field( 'commentquiz-update-options' );
@@ -400,22 +394,22 @@ BOX;
 		<table class="form-table">
 			<tbody>
 				<tr valign="top">
-					<th scope="row"><?php $this->p_e( 'Default Quiz' ) ?></th>
-					<td><input type="text" name="commentquiz_options[def_q]" id="def_q" size="35" value="<?php echo $this->checktext( $opts, 'def_q', '' ); ?>" /><label for="def_q"> <?php $this->p_e( 'Question' ); ?></label><br />
-						<input type="text" name="commentquiz_options[def_a]" id="def_a" size="15" value="<?php echo $this->checktext( $opts, 'def_a', '' ); ?>"/><label for="def_a"> <?php $this->p_e( 'Answer' ); ?></label><br />
-						<span><?php $this->p_e( 'You may enter multiple correct answers, separated by commas; e.g. <code>color, colour</code>' ) ?></span>
+					<th scope="row"><?php _e( 'Default Quiz', 'commentquiz' ) ?></th>
+					<td><input type="text" name="commentquiz_options[def_q]" id="def_q" size="35" value="<?php echo $this->checktext( $opts, 'def_q', '' ); ?>" /><label for="def_q"> <?php _e( 'Question', 'commentquiz' ); ?></label><br />
+						<input type="text" name="commentquiz_options[def_a]" id="def_a" size="15" value="<?php echo $this->checktext( $opts, 'def_a', '' ); ?>"/><label for="def_a"> <?php _e( 'Answer', 'commentquiz' ); ?></label><br />
+						<span><?php _e( 'You may enter multiple correct answers, separated by commas; e.g. <code>color, colour</code>', 'commentquiz' ) ?></span>
 					</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><?php $this->p_e( 'Quiz Form' ) ?></th>
+					<th scope="row"><?php _e( 'Quiz Form', 'commentquiz' ) ?></th>
 					<td><textarea name="commentquiz_options[quiz_form]" id="quiz_form" cols="60" rows="6"><?php echo $this->get_quiz_form( true, false ); ?></textarea><br />
-					<span><?php $this->p_e( 'The form must contain a %question% placeholder.<br />To reset to default, blank this field and save settings.' ) ?></span>
+					<span><?php _e( 'The form must contain a %question% placeholder.<br />To reset to default, blank this field and save settings.', 'commentquiz' ) ?></span>
 					</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><?php $this->p_e( 'Cleanup' ) ?></th>
+					<th scope="row"><?php _e( 'Cleanup', 'commentquiz' ) ?></th>
 					<td><input type="text" name="commentquiz_options[compare_funcs]" id="compare_funcs" size="35" value="<?php echo $this->checktext( $opts, 'compare_funcs', '' ) ; ?>" /><br />
-					<span><?php $this->p_e( "Commenter's response will be passed through these PHP functions.<br />Separate function names with commas." ) ?></span>
+					<span><?php _e( "Commenter's response will be passed through these PHP functions.<br />Separate function names with commas.", 'commentquiz' ) ?></span>
 					</td>
 				</tr>
 			</tbody>
@@ -439,4 +433,3 @@ function the_quiz() {
 	do_action( 'show_comment_quiz' );
 }
 
-?>
