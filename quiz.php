@@ -2,8 +2,7 @@
 /*
 Plugin Name: Quiz
 Plugin URI: http://wordpress.org/extend/plugins/quiz/
-Version: 1.2
-Date: 2010-02-03
+Version: 1.3-beta-1
 Description: Commenters must answer the question correctly. You provide the question for each post or page, unless you have post publishing capabilities.
 Author: <a href="http://andyskelton.com/">Andy Skelton</a>, <a href="http://striderweb.com/">Stephen Rider</a> and <a href="http://coveredwebservices.com/">Mark Jaquith</a>
 */
@@ -295,7 +294,7 @@ BOX;
 
 	function save_meta_box( $post_id ) {
 
-		if ( ! wp_verify_nonce( $_POST['comment_quiz_metabox'], plugin_basename(__FILE__) ) ) {
+		if ( !isset( $_POST['comment_quiz_metabox'] ) || !wp_verify_nonce( $_POST['comment_quiz_metabox'], plugin_basename(__FILE__) ) ) {
 			 return $post_id;
 		} else if ( 'page' == $_POST['post_type'] ) {
 			if ( ! current_user_can( 'edit_page', $post_id ) )
