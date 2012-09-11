@@ -115,33 +115,6 @@ class Comment_Quiz_Plugin {
 		return $quiz_form;
 	}
 
-	function get_plugin_data( $param = null ) {
-		// You can optionally pass a specific value to fetch, e.g. 'Version' -- but it's inefficient to do that multiple times
-		if( !function_exists( 'get_plugin_data' ) ) require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		static $plugin_data;
-		if( ! $plugin_data ) {
-			$plugin_data = get_plugin_data( __FILE__ );
-			if ( ! isset( $plugin_data['Title'] ) ) {
-				if ( '' != $plugin_data['PluginURI'] && '' != $plugin_data['Name'] ) {
-					$plugin_data['Title'] = '<a href="' . $plugin_data['PluginURI'] . '" title="'. __( 'Visit plugin homepage' ) . '">' . $plugin_data['Name'] . '</a>';
-				} else {
-					$plugin_data['Title'] = $name;
-				}
-			}
-		}
-
-		$output = $plugin_data;
-		if( $param && is_array( $plugin_data )  ) {
-			foreach( $plugin_data as $key => $value ) {
-				if( $param == $key ) {
-					$output = $value;
-					break;
-				}
-			}
-		}
-		return $output;
-	}
-
 	function upgrade_slashing_12( $curr_options ) {
 		update_option( $this->option_name, stripslashes_deep( (array) $curr_options ) );
 		return get_option( $this->option_name );
@@ -332,12 +305,6 @@ BOX;
 		return false;
 	}
 
-	// Add homepage link to settings page footer
-	function admin_footer() {
-		$pluginfo = $this->get_plugin_data();
-		printf( '%1$s plugin | Version %2$s | by %3$s<br />', $pluginfo['Title'], $pluginfo['Version'], $pluginfo['Author'] );
-	}
-
 // Add action link(s) to plugins page
 	function filter_plugin_actions( $links, $file ){
 		//Static so we don't call plugin_basename on every plugin row.
@@ -381,8 +348,6 @@ BOX;
 
 // finally, the Settings Page itself
 	function settings_page() {
-		add_action( 'in_admin_footer', array( $this, 'admin_footer' ), 9 );
-
 		// get options for use in formsetting functions
 		$opts = get_option( $this->option_name );
 
