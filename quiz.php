@@ -34,9 +34,9 @@ class Comment_Quiz_Plugin {
 
 			add_filter( 'preprocess_comment', array( $this, 'process' ), 1 );
 		}
-		add_action( 'admin_menu',               array( $this, 'add_settings_page' ));
-		add_action( 'admin_menu',               array( $this, 'call_meta_box'     ));
-		add_action( 'save_post',                array( $this, 'save_meta_box'     ));
+		add_action( 'admin_menu',                   array( $this, 'add_settings_page' ));
+		add_action( 'admin_menu',                   array( $this, 'call_meta_box'     ));
+		add_action( 'save_post',                    array( $this, 'save_meta_box'     ));
 		add_action( 'wp_ajax_validate_quiz',        array( $this, 'ajax_callback'     ));
 		add_action( 'wp_ajax_nopriv_validate_quiz', array( $this, 'ajax_callback'     ));
 	}
