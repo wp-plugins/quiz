@@ -14,28 +14,29 @@ Author: <a href="http://andyskelton.com/">Andy Skelton</a>, <a href="http://stri
 	TODO: Improve auto-placement JavaScript OR make user-changeable
 */
 
-class commentquiz {
-
+class Comment_Quiz_Plugin {
+	static $instance;
 	var $option_version = '1.2';
 	var $option_name = 'plugin_commentquiz_settings';
 
-	function commentquiz() {
-		load_plugin_textdomain( 'commentquiz', false, basename( dirname( __FILE__ ) ) . '/lang' );
+	function __construct() {
+		self::$instance = $this;
+		load_plugin_textdomain( 'quiz', false, basename( dirname( __FILE__ ) ) . '/languages' );
 		$options = get_option( $this->option_name );
 
 		if ( !isset( $options['last_opts_ver'] ) || $options['last_opts_ver'] != $this->option_version )
 			$this->set_defaults();
 		if( ! is_admin() ) {
 			// This is so end users can use do_action('show_comment_quiz') in themes
-			add_action( 'show_comment_quiz', array( &$this, 'the_quiz' ) );
+			add_action( 'show_comment_quiz', array( $this, 'the_quiz' ) );
 			// ...otherwise will add form automatically
-			add_action( 'comment_form', array( &$this, 'the_quiz' ) );
+			add_action( 'comment_form', array( $this, 'the_quiz' ) );
 
-			add_filter( 'preprocess_comment', array( &$this, 'process' ), 1 );
+			add_filter( 'preprocess_comment', array( $this, 'process' ), 1 );
 		}
-		add_action( 'admin_menu', array( &$this, 'add_settings_page' ) );
-		add_action( 'admin_menu', array( &$this, 'call_meta_box' ) );
-		add_action( 'save_post', array( &$this, 'save_meta_box' ) );
+		add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
+		add_action( 'admin_menu', array( $this, 'call_meta_box' ) );
+		add_action( 'save_post', array( $this, 'save_meta_box' ) );
 	}
 
 	function get_quiz( $id = null, $blankdefault = false ) {
@@ -190,7 +191,7 @@ class commentquiz {
 		$quiz_form = $this->get_quiz_form();
 
 		echo str_replace( '%question%', $quiz['q'], $quiz_form );
-		add_action( 'wp_footer', array( &$this, 'form_position' ) );
+		add_action( 'wp_footer', array( $this, 'form_position' ) );
 		return true;
 	}
 
@@ -263,8 +264,8 @@ if ( u ) {
 
 	function call_meta_box() {
 		if( function_exists( 'add_meta_box' ) ) {
-			add_meta_box( 'edit_comment_quiz', 'Comment Quiz', array( &$this, 'meta_box' ), 'post', 'normal' );
-			add_meta_box( 'edit_comment_quiz', 'Comment Quiz', array( &$this, 'meta_box' ), 'page', 'normal' );
+			add_meta_box( 'edit_comment_quiz', 'Comment Quiz', array( $this, 'meta_box' ), 'post', 'normal' );
+			add_meta_box( 'edit_comment_quiz', 'Comment Quiz', array( $this, 'meta_box' ), 'page', 'normal' );
 		}
 	}
 
@@ -317,9 +318,9 @@ BOX;
 
 	function add_settings_page() {
 		if( current_user_can('manage_options') ) {
-			$page = add_options_page( __( 'Comment Quiz', 'commentquiz' ), __( 'Quiz', 'commentquiz' ), 'manage_options', 'quiz', array( &$this, 'settings_page' ) );
-			add_filter( 'plugin_action_links', array( &$this, 'filter_plugin_actions' ), 10, 2 );
-			add_action( 'load-' . $page, array( &$this, 'save_options' ) );
+			$page = add_options_page( __( 'Comment Quiz', 'commentquiz' ), __( 'Quiz', 'commentquiz' ), 'manage_options', 'quiz', array( $this, 'settings_page' ) );
+			add_filter( 'plugin_action_links', array( $this, 'filter_plugin_actions' ), 10, 2 );
+			add_action( 'load-' . $page, array( $this, 'save_options' ) );
 			return $page;
 		}
 		return false;
@@ -374,7 +375,7 @@ BOX;
 
 // finally, the Settings Page itself
 	function settings_page() {
-		add_action( 'in_admin_footer', array( &$this, 'admin_footer' ), 9 );
+		add_action( 'in_admin_footer', array( $this, 'admin_footer' ), 9 );
 
 		// get options for use in formsetting functions
 		$opts = get_option( $this->option_name );
@@ -420,7 +421,7 @@ BOX;
 
 } // END class commentquiz
 
-$commentquiz = new commentquiz;
+new Comment_Quiz_Plugin;
 
 // register_activation_hook( __FILE__, array( $commentquiz, 'set_defaults' ) );
 
