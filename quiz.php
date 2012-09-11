@@ -131,7 +131,6 @@ class Comment_Quiz_Plugin {
 			'last_opts_ver' => $this->option_version,
 			'def_q' => __( 'Which is warmer, ice or steam?', 'quiz' ),
 			'def_a' => __( 'steam', 'quiz' ),
-			'compare_funcs' => 'strip_tags, strtolower, trim',
 			'quiz_form' => $this->get_quiz_form()
 		);
 
@@ -218,22 +217,10 @@ if ( u ) {
 	}
 
 	function compare( $a, $b ) {
+		$a = trim( strtolower( strip_tags( $a ) ) );
+		$b = trim( strtolower( strip_tags( $b ) ) );
 
-		if ( $a === $b ) return true;
-
-		$options = get_option( $this->option_name );
-		if ( $options['compare_funcs'] ) {
-			$funcs = array_map( 'trim', explode( ',', $options['compare_funcs'] ) );
-			foreach ( $funcs as $func ) {
-				if ( is_callable( $func ) ) {
-					$a = $func( $a );
-					$b = $func( $b );
-				}
-			}
-			if ( $a === $b ) return true;
-		}
-
-		return false;
+		return $a === $b;
 	}
 
 // ************************
@@ -373,12 +360,6 @@ BOX;
 					<th scope="row"><?php _e( 'Quiz Form', 'quiz' ) ?></th>
 					<td><textarea name="commentquiz_options[quiz_form]" id="quiz_form" cols="60" rows="6"><?php echo $this->get_quiz_form( true, false ); ?></textarea><br />
 					<span><?php _e( 'The form must contain a %question% placeholder.<br />To reset to default, blank this field and save settings.', 'quiz' ) ?></span>
-					</td>
-				</tr>
-				<tr valign="top">
-					<th scope="row"><?php _e( 'Cleanup', 'quiz' ) ?></th>
-					<td><input type="text" name="commentquiz_options[compare_funcs]" id="compare_funcs" size="35" value="<?php echo $this->checktext( $opts, 'compare_funcs', '' ) ; ?>" /><br />
-					<span><?php _e( "Commenter's response will be passed through these PHP functions.<br />Separate function names with commas.", 'quiz' ) ?></span>
 					</td>
 				</tr>
 			</tbody>
