@@ -42,13 +42,8 @@ class Comment_Quiz_Plugin {
 	}
 
 	function get_quiz( $id = null, $blankdefault = false ) {
-		static $quiz;
-		if( $quiz ) return $quiz;
-
-		if( ! $id ) {
-			global $post_ID;
-			$id = $post_ID;
-		}
+		if ( !$id )
+			$id = $GLOBALS['post']->ID;
 		$quiz = get_post_meta( $id, 'quiz', true );
 		if ( ( isset( $quiz['q'] ) && 'noquiz' == $quiz['q'] ) || ( isset( $quiz['a'] ) && 'noquiz' == $quiz['a'] ) ) {
 			return false;
@@ -90,7 +85,17 @@ class Comment_Quiz_Plugin {
 	}
 
 	function ajax_callback() {
-
+		$quiz = $this->get_quiz( $_REQUEST['post_id'] );
+		if ( $quiz ) {
+			$answers = array_map( 'trim', explode( ',', $quiz['a'] ) );
+			foreach ( $answers as $answer ) {
+				if ( $this->compare( $answer, $_REQUEST['a'] ) )
+					wp_die( 0 );
+			}
+			wp_die( 1 );
+		} else {
+			wp_die( 0 );
+		}
 	}
 
 	function get_quiz_form( $html = false, $validate = true ) {
@@ -236,8 +241,8 @@ if ( u ) {
 	}
 
 	function meta_box() {
-		global $post_ID;
-		$quiz = $this->get_quiz( $post_ID, true );
+		global $post;
+		$quiz = $this->get_quiz( $post->ID, true );
 		if( $quiz ) {
 			$q = esc_attr( $quiz['q'] );
 		} else {
