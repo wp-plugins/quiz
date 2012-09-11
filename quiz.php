@@ -200,13 +200,11 @@ class commentquiz {
 		if( $this->form_shown != 1 ) return false;
 
 		$form_position = '
-<script type="text/javascript">
-//<!--
-	var u=document.getElementById("comment");
-	if ( u ) {
-		u.parentNode.parentNode.insertBefore(document.getElementById("commentquiz"), u.parentNode);
-	}
-//-->
+<script>
+var u=document.getElementById("comment");
+if ( u ) {
+	u.parentNode.parentNode.insertBefore(document.getElementById("commentquiz"), u.parentNode);
+}
 </script>
 ';
 		echo $form_position;
