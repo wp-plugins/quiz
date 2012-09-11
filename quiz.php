@@ -150,8 +150,8 @@ class Comment_Quiz_Plugin {
 
 		$defaults = array(
 			'last_opts_ver' => $this->option_version,
-			'def_q' => __( 'Which is warmer, ice or steam?', 'commentquiz' ),
-			'def_a' => __( 'steam', 'commentquiz' ),
+			'def_q' => __( 'Which is warmer, ice or steam?', 'quiz' ),
+			'def_a' => __( 'steam', 'quiz' ),
 			'compare_funcs' => 'strip_tags, strtolower, trim',
 			'quiz_form' => $this->get_quiz_form()
 		);
@@ -222,7 +222,7 @@ if ( u ) {
 
 			if ( $quiz ) {
 				if ( empty( $_POST['quiz'] ) )
-					wp_die( __( 'You must answer the question to post a comment. Please <a href="javascript:window.history.back()">go back</a> and try again.', 'commentquiz' ) );
+					wp_die( __( 'You must answer the question to post a comment. Please <a href="javascript:window.history.back()">go back</a> and try again.', 'quiz' ) );
 
 				$answer = $quiz['a'];
 				$answer = array_map( 'trim', explode( ',', $answer ) );
@@ -232,7 +232,7 @@ if ( u ) {
 					if ( $this->compare( $a, $response ) )
 						return $commentdata;
 				}
-				wp_die( __( 'You answered the question incorrectly.  Please <a href="javascript:window.history.back()">go back</a> and try again.', 'commentquiz' ) );
+				wp_die( __( 'You answered the question incorrectly.  Please <a href="javascript:window.history.back()">go back</a> and try again.', 'quiz' ) );
 			}
 		}
 		return $commentdata;
@@ -279,10 +279,10 @@ if ( u ) {
 		}
 		$a = esc_attr( $quiz['a'] );
 		$nonce = wp_create_nonce( plugin_basename( __FILE__ ) );
-		$howto1 = __( 'Enter "noquiz" if you don\'t want a question for this post, or leave it blank to use the default question.', 'commentquiz' );
-		$howto2 = __( 'You may enter multiple correct answers, separated by commas; e.g. <code>color, colour</code>', 'commentquiz' );
-		$qlabel = __( 'Question', 'commentquiz' );
-		$alabel = __( 'Answer', 'commentquiz' );
+		$howto1 = __( 'Enter "noquiz" if you don\'t want a question for this post, or leave it blank to use the default question.', 'quiz' );
+		$howto2 = __( 'You may enter multiple correct answers, separated by commas; e.g. <code>color, colour</code>', 'quiz' );
+		$qlabel = __( 'Question', 'quiz' );
+		$alabel = __( 'Answer', 'quiz' );
 		echo <<< BOX
 		<input type="hidden" name="comment_quiz_metabox" id="comment_quiz_metabox" value="$nonce" />
 		<p><input type="text" name="quizQuestion" id="quizQuestion" size="25" value="$q" tabindex="3" /><label for="quizQuestion"> $qlabel</label><br />
@@ -318,7 +318,7 @@ BOX;
 
 	function add_settings_page() {
 		if( current_user_can('manage_options') ) {
-			$page = add_options_page( __( 'Comment Quiz', 'commentquiz' ), __( 'Quiz', 'commentquiz' ), 'manage_options', 'quiz', array( $this, 'settings_page' ) );
+			$page = add_options_page( __( 'Comment Quiz', 'quiz' ), __( 'Quiz', 'quiz' ), 'manage_options', 'quiz', array( $this, 'settings_page' ) );
 			add_filter( 'plugin_action_links', array( $this, 'filter_plugin_actions' ), 10, 2 );
 			add_action( 'load-' . $page, array( $this, 'save_options' ) );
 			return $page;
@@ -383,7 +383,7 @@ BOX;
 	?>
 <div class="wrap">
 	<?php screen_icon(); ?>
-	<h2><?php _e( 'Comment Quiz', 'commentquiz' ); ?></h2>
+	<h2><?php _e( 'Comment Quiz', 'quiz' ); ?></h2>
 	<form method="post" action="<?php echo $this->options_url(); ?>">
 		<?php
 		if ( function_exists( 'wp_nonce_field' ) )
@@ -392,22 +392,22 @@ BOX;
 		<table class="form-table">
 			<tbody>
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Default Quiz', 'commentquiz' ) ?></th>
-					<td><input type="text" name="commentquiz_options[def_q]" id="def_q" size="35" value="<?php echo $this->checktext( $opts, 'def_q', '' ); ?>" /><label for="def_q"> <?php _e( 'Question', 'commentquiz' ); ?></label><br />
-						<input type="text" name="commentquiz_options[def_a]" id="def_a" size="15" value="<?php echo $this->checktext( $opts, 'def_a', '' ); ?>"/><label for="def_a"> <?php _e( 'Answer', 'commentquiz' ); ?></label><br />
-						<span><?php _e( 'You may enter multiple correct answers, separated by commas; e.g. <code>color, colour</code>', 'commentquiz' ) ?></span>
+					<th scope="row"><?php _e( 'Default Quiz', 'quiz' ) ?></th>
+					<td><input type="text" name="commentquiz_options[def_q]" id="def_q" size="35" value="<?php echo $this->checktext( $opts, 'def_q', '' ); ?>" /><label for="def_q"> <?php _e( 'Question', 'quiz' ); ?></label><br />
+						<input type="text" name="commentquiz_options[def_a]" id="def_a" size="15" value="<?php echo $this->checktext( $opts, 'def_a', '' ); ?>"/><label for="def_a"> <?php _e( 'Answer', 'quiz' ); ?></label><br />
+						<span><?php _e( 'You may enter multiple correct answers, separated by commas; e.g. <code>color, colour</code>', 'quiz' ) ?></span>
 					</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Quiz Form', 'commentquiz' ) ?></th>
+					<th scope="row"><?php _e( 'Quiz Form', 'quiz' ) ?></th>
 					<td><textarea name="commentquiz_options[quiz_form]" id="quiz_form" cols="60" rows="6"><?php echo $this->get_quiz_form( true, false ); ?></textarea><br />
-					<span><?php _e( 'The form must contain a %question% placeholder.<br />To reset to default, blank this field and save settings.', 'commentquiz' ) ?></span>
+					<span><?php _e( 'The form must contain a %question% placeholder.<br />To reset to default, blank this field and save settings.', 'quiz' ) ?></span>
 					</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><?php _e( 'Cleanup', 'commentquiz' ) ?></th>
+					<th scope="row"><?php _e( 'Cleanup', 'quiz' ) ?></th>
 					<td><input type="text" name="commentquiz_options[compare_funcs]" id="compare_funcs" size="35" value="<?php echo $this->checktext( $opts, 'compare_funcs', '' ) ; ?>" /><br />
-					<span><?php _e( "Commenter's response will be passed through these PHP functions.<br />Separate function names with commas.", 'commentquiz' ) ?></span>
+					<span><?php _e( "Commenter's response will be passed through these PHP functions.<br />Separate function names with commas.", 'quiz' ) ?></span>
 					</td>
 				</tr>
 			</tbody>
