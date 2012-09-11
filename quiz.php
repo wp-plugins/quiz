@@ -220,7 +220,7 @@ if ( u ) {
 		$a = trim( strtolower( strip_tags( $a ) ) );
 		$b = trim( strtolower( strip_tags( $b ) ) );
 
-		return $a === $b;
+		return apply_filters( 'comment_quiz_compare', $a === $b, $a, $b );
 	}
 
 // ************************
