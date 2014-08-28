@@ -53,6 +53,17 @@ Please upgrade immediately! Version 1.2 includes important security fixes.
 
 == Changelog ==
 
+= 1.3 beta 1 =
+	* By MJ 2012-09-11
+	* Code improvements including dumping some old PHP 4 stuff
+	* remove "Cleanup" functions option. Replaced with comment_quiz_compare filter.
+	* Kill the footer links
+	* Added code for AJAX callback
+	* Updated textdomain calls
+	* HTML5 style script tags
+	* Bump the supported WP versions
+	* Added a "languages" folder to hold po/mo/pot files -- SR
+
 = 1.2 =
 	* by MJ 2010-02-03
 	* BUGFIX -- custom questions didn't display
