@@ -3,7 +3,7 @@
 Plugin Name: Quiz
 Plugin URI: http://wordpress.org/extend/plugins/quiz/
 Version: 1.3 beta 2
-Description: Commenters must answer the question correctly. You provide the question for each post or page, unless you have post publishing capabilities.
+Description: You provide a question for each post or page. Visitors must answer the question correctly to comment, unless they have post publishing capabilities.
 Author: <a href="http://andyskelton.com/">Andy Skelton</a>, <a href="http://striderweb.com/">Stephen Rider</a> and <a href="http://coveredwebservices.com/">Mark Jaquith</a>
 Text Domain: quiz
 Domain Path: /languages
