@@ -1,8 +1,8 @@
 === Quiz ===
 Contributors: andy, strider72, markjaquith
 Tags: comment, spam, anti-spam, discussion, captcha
-Tested up to: 3.5
-Requires at least: 3.4
+Tested up to: 3.0
+Requires at least: 2.8
 Stable tag: 1.2
 
 Reduces spam and troll comments by requiring commenters to answer a question.
@@ -90,7 +90,7 @@ Please upgrade immediately! Version 1.2 includes important security fixes.
 = 1.1 beta 5 =
  	* by SR
 	* Settings Screen in Admin -- no more editing files
-	* "Comment Quiz" meta box in Post/Page edit screen -- no more shortcodes. Data stored same as before, so preexisting quizzes still work
+	* "Comment Quiz" meta box in Post/Page edit screen -- no more shortcodes. Data stored same as before, so preexisting quizzes still work	 
 	* No more [short tag] system functions.  Requires WP 2.5+ for the meta boxes.
 	* Added wp_kses cleanup to quiz questions
 	* Added strip_tags to default Cleanup functions
