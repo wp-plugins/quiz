@@ -47,11 +47,14 @@ Tips on how to improve questions can be found at http://striderweb.com/nerdapher
 
 To let you see the question as it appears to other visitors, and to not unnecessarily interfere with caching systems.
 
-== Upgrade Notice ==
-
-Please upgrade immediately! Version 1.2 includes important security fixes.
-
 == Changelog ==
+
+= 1.3 beta 2 =
+	* by SR 2014-08-27
+	* Improved Plugin Description
+	* Added translation headers
+	* Updated log with 1.3b1 changes
+	* Corrected language folder name to match textdomain call
 
 = 1.3 beta 1 =
 	* By MJ 2012-09-11
