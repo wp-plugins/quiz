@@ -12,8 +12,8 @@ Domain Path: /lang
 // To manually place the quiz form in your comments form, use do_action('show_comment_quiz')
 
 /*
-	TODO: "Wrong answer" page -- Show comment content and caution to copy content before going back
-	TODO: Improve auto-placement JavaScript OR make user-changeable
+    FIXME: Some translation strings contain code or other content that should not be translatable
+	TODO: "Wrong answer" page -- Show comment content and a caution to copy content before going back
 */
 
 class Comment_Quiz_Plugin {
