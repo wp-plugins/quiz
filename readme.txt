@@ -2,7 +2,7 @@
 Contributors: andy, strider72, markjaquith
 Tags: comment, spam, anti-spam, discussion, captcha
 Tested up to: 4.1
-Requires at least: 3.0
+Requires at least: 3.4
 Stable tag: 1.2
 
 Reduces spam and troll comments by requiring commenters to answer a question.
@@ -52,7 +52,7 @@ To let you see the question as it appears to other visitors, and to not unnecess
 = 1.3 =
     * by SR 2015-02-28
     * Now hooks quiz to 'comment_form_after_fields'. Removed JavaScript that (maybe) repositioned quiz.
-    * Minimum WP required: 3.0
+    * Minimum WP required: 3.4
 	* Improved Plugin Description
 	* Added translation headers
 	* Updated log with 1.3b1 changes
