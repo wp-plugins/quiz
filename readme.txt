@@ -49,13 +49,10 @@ To let you see the question as it appears to other visitors, and to not unnecess
 
 == Changelog ==
 
-= 1.3 beta 3 =
-    * by SR 2015-08-27
+= 1.3 =
+    * by SR 2015-02-28
     * Now hooks quiz to 'comment_form_after_fields'. Removed JavaScript that (maybe) repositioned quiz.
     * Minimum WP required: 3.0
-
-= 1.3 beta 2 =
-	* by SR 2014-08-27
 	* Improved Plugin Description
 	* Added translation headers
 	* Updated log with 1.3b1 changes
