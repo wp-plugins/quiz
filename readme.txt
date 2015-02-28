@@ -1,8 +1,8 @@
 === Quiz ===
 Contributors: andy, strider72, markjaquith
 Tags: comment, spam, anti-spam, discussion, captcha
-Tested up to: 3.0
-Requires at least: 2.8
+Tested up to: 4.1
+Requires at least: 3.0
 Stable tag: 1.2
 
 Reduces spam and troll comments by requiring commenters to answer a question.
@@ -49,12 +49,18 @@ To let you see the question as it appears to other visitors, and to not unnecess
 
 == Changelog ==
 
+= 1.3 beta 3 =
+    * by SR 2015-08-27
+    * Now hooks quiz to 'comment_form_after_fields'. Removed JavaScript that (maybe) repositioned quiz.
+    * Minimum WP required: 3.0
+
 = 1.3 beta 2 =
 	* by SR 2014-08-27
 	* Improved Plugin Description
 	* Added translation headers
 	* Updated log with 1.3b1 changes
 	* Corrected language folder name to match textdomain call
+	* Added a "lang" folder to hold po/mo/pot files
 
 = 1.3 beta 1 =
 	* By MJ 2012-09-11
@@ -65,7 +71,6 @@ To let you see the question as it appears to other visitors, and to not unnecess
 	* Updated textdomain calls
 	* HTML5 style script tags
 	* Bump the supported WP versions
-	* Added a "languages" folder to hold po/mo/pot files -- SR
 
 = 1.2 =
 	* by MJ 2010-02-03

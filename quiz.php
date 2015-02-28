@@ -2,11 +2,11 @@
 /*
 Plugin Name: Quiz
 Plugin URI: http://wordpress.org/extend/plugins/quiz/
-Version: 1.3 beta 2
+Version: 1.3 beta 3
 Description: You provide a question for each post or page. Visitors must answer the question correctly to comment, unless they have post publishing capabilities.
 Author: <a href="http://andyskelton.com/">Andy Skelton</a>, <a href="http://striderweb.com/">Stephen Rider</a> and <a href="http://coveredwebservices.com/">Mark Jaquith</a>
 Text Domain: quiz
-Domain Path: /languages
+Domain Path: /lang
 */
 
 // To manually place the quiz form in your comments form, use do_action('show_comment_quiz')
@@ -23,7 +23,7 @@ class Comment_Quiz_Plugin {
 
 	function __construct() {
 		self::$instance = $this;
-		load_plugin_textdomain( 'quiz', false, basename( dirname( __FILE__ ) ) . '/languages' );
+		load_plugin_textdomain( 'quiz', false, basename( dirname( __FILE__ ) ) . '/lang' );
 		$options = get_option( $this->option_name );
 
 		if ( !isset( $options['last_opts_ver'] ) || $options['last_opts_ver'] != $this->option_version )
@@ -32,14 +32,14 @@ class Comment_Quiz_Plugin {
 			// This is so end users can use do_action('show_comment_quiz') in themes
 			add_action( 'show_comment_quiz', array( $this, 'the_quiz' ) );
 			// ...otherwise will add form automatically
-			add_action( 'comment_form', array( $this, 'the_quiz' ) );
+			add_action( 'comment_form_after_fields', array( $this, 'the_quiz' ) );
 
 			add_filter( 'preprocess_comment', array( $this, 'process' ), 1 );
 		}
-		add_action( 'admin_menu',                   array( $this, 'add_settings_page' ));
-		add_action( 'admin_menu',                   array( $this, 'call_meta_box'     ));
-		add_action( 'save_post',                    array( $this, 'save_meta_box'     ));
-		add_action( 'wp_ajax_validate_quiz',        array( $this, 'ajax_callback'     ));
+		add_action( 'admin_menu', array( $this, 'add_settings_page' ));
+		add_action( 'admin_menu', array( $this, 'call_meta_box'     ));
+		add_action( 'save_post', array( $this, 'save_meta_box'     ));
+		add_action( 'wp_ajax_validate_quiz', array( $this, 'ajax_callback'     ));
 		add_action( 'wp_ajax_nopriv_validate_quiz', array( $this, 'ajax_callback'     ));
 	}
 
@@ -176,24 +176,6 @@ class Comment_Quiz_Plugin {
 		$quiz_form = $this->get_quiz_form();
 
 		echo str_replace( '%question%', $quiz['q'], $quiz_form );
-		add_action( 'wp_footer', array( $this, 'form_position' ) );
-		return true;
-	}
-
-// try to put form in a better location than _after_ the submit button!
-	function form_position() {
-		// only if the the_quiz() was called exactly once
-		if( $this->form_shown != 1 ) return false;
-
-		$form_position = '
-<script>
-var u=document.getElementById("comment");
-if ( u ) {
-	u.parentNode.parentNode.insertBefore(document.getElementById("commentquiz"), u.parentNode);
-}
-</script>
-';
-		echo $form_position;
 		return true;
 	}
 
