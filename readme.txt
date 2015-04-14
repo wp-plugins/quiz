@@ -3,7 +3,7 @@ Contributors: andy, strider72, markjaquith
 Tags: comment, spam, anti-spam, discussion, captcha
 Tested up to: 4.1
 Requires at least: 3.4
-Stable tag: 1.3
+Stable tag: 1.3.1
 
 Reduces spam and troll comments by requiring commenters to answer a question.
 
