@@ -49,6 +49,12 @@ To let you see the question as it appears to other visitors, and to not unnecess
 
 == Changelog ==
 
+= 1.3.1
+    * by SR 2015-04-13
+    * Restored 'comment_form' to comment_form hook for compatibility with older themes. (the_quiz will still only run once.)
+    * Removed call to deprecated function screen_icon()
+    * Code cleanup -- removed some unused functions
+
 = 1.3 =
     * by SR 2015-02-28
     * Now hooks quiz to 'comment_form_after_fields'. Removed JavaScript that (maybe) repositioned quiz.

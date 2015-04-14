@@ -33,6 +33,7 @@ class Comment_Quiz_Plugin {
 			add_action( 'show_comment_quiz', array( $this, 'the_quiz' ) );
 			// ...otherwise will add form automatically
 			add_action( 'comment_form_after_fields', array( $this, 'the_quiz' ) );
+			add_action( 'comment_form', array( $this, 'the_quiz' ) ); // compatibility with older themes that lack 'comment_form_after_fields' hook
 
 			add_filter( 'preprocess_comment', array( $this, 'process' ), 1 );
 		}
@@ -176,6 +177,24 @@ class Comment_Quiz_Plugin {
 		$quiz_form = $this->get_quiz_form();
 
 		echo str_replace( '%question%', $quiz['q'], $quiz_form );
+		add_action( 'wp_print_footer_scripts', array( $this, 'form_position' ) );
+		return true;
+	}
+
+// try to put form in a better location than _after_ the submit button!
+	function form_position() {
+		// if the the_quiz() was only called from comment_form hook...
+		if( did_action( 'show_comment_quiz' ) > 0 || did_action('comment_form_after_fields') > 0 ) return false;
+
+		$form_position = '
+<script>
+var u=document.getElementById("comment");
+if ( u ) {
+	u.parentNode.parentNode.insertBefore(document.getElementById("commentquiz"), u.parentNode);
+}
+</script>
+';
+		echo $form_position;
 		return true;
 	}
 
@@ -294,22 +313,10 @@ BOX;
 		return $links;
 	}
 
-// these three functions are used by the settings page to display set options in the form controls when the page is opened
-
-	function checkflag( $options, $optname ) {
-		// for checkboxes
-		return $options[$optname] ? ' checked="checked"' : '';
-	}
-
+// this function used by the settings page to display set options in the form controls when the page is opened
 	function checktext( $options, $optname, $optdefault = '' ) {
 		// for text boxes and textareas
 		return esc_attr( ( $options[$optname] ) ? $options[$optname] : $optdefault );
-	}
-
-	function checkcombo( $options, $optname, $thisopt, $is_default = false ) {
-		// for dropdowns
-		return (
-			( $is_default && ! $options[$optname] ) || $options[$optname] == $thisopt ) ? ' selected="selected"' : '';
 	}
 
 // Saving the options
@@ -329,7 +336,6 @@ BOX;
 
 	?>
 <div class="wrap">
-	<?php screen_icon(); ?>
 	<h2><?php _e( 'Comment Quiz', 'quiz' ); ?></h2>
 	<form method="post" action="<?php echo $this->options_url(); ?>">
 		<?php
