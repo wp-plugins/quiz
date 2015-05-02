@@ -293,7 +293,7 @@ BOX;
 	function add_settings_page() {
 		if( current_user_can('manage_options') ) {
 			$page = add_options_page( __( 'Comment Quiz', 'quiz' ), __( 'Quiz', 'quiz' ), 'manage_options', 'quiz', array( $this, 'settings_page' ) );
-			add_filter( 'plugin_action_links', array( $this, 'filter_plugin_actions' ), 10, 2 );
+			add_filter( 'plugin_action_links_'.plugin_basename( __FILE__ ), array( $this, 'filter_plugin_actions' ) );
 			add_action( 'load-' . $page, array( $this, 'save_options' ) );
 			return $page;
 		}
@@ -301,15 +301,9 @@ BOX;
 	}
 
 // Add action link(s) to plugins page
-	function filter_plugin_actions( $links, $file ){
-		//Static so we don't call plugin_basename on every plugin row.
-		static $this_plugin;
-		if( ! $this_plugin ) $this_plugin = plugin_basename( __FILE__ );
-
-		if( $file == $this_plugin ){
-			$settings_link = '<a href="' . $this->options_url() . '">' . __( 'Settings' ) . '</a>';
-			array_unshift( $links, $settings_link );
-		}
+	function filter_plugin_actions( $links ){
+		$settings_link = '<a href="' . $this->options_url() . '">' . __( 'Settings' ) . '</a>';
+		array_unshift( $links, $settings_link );
 		return $links;
 	}
 

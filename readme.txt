@@ -49,6 +49,10 @@ To let you see the question as it appears to other visitors, and to not unnecess
 
 == Changelog ==
 
+= 1.3.2 =
+    * by SR
+    * Improved hook for Settings link on Plugins page
+
 = 1.3.1 =
     * by SR 2015-04-13
     * Restored 'comment_form' to comment_form hook for compatibility with older themes. (the_quiz will still only run once.)
